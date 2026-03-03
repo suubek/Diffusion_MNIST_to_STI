@@ -15,7 +15,7 @@ def train_diffusion_model(dataset,
                           score_model,
                           marginal_prob_std_fn,
                           n_epochs =   100,
-                          batch_size =  1024,
+                          batch_size =  16,
                           lr=10e-4,
                           model_name="transformer"):
     # Print model architecture size

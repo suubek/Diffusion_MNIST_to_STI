@@ -21,11 +21,18 @@ if __name__ == "__main__":
 
     # Define training params
     n_epochs = 100
-    batch_size = 1024
+    batch_size = 16
     lr = 10e-4
 
     # Prepare dataset
-    dataset = MNIST('.', train=True, transform=transforms.ToTensor(), download=True)
+    transform = transforms.Compose([
+        transforms.Resize((128, 128)),  # Resize to 32x32 (or your desired size)
+        transforms.ToTensor(),        # Convert to tensor
+        # Optional: Add normalization if needed
+        # transforms.Normalize((0.5,), (0.5,))  # For single channel
+    ])
+    dataset = MNIST('.', train=True, transform=transform, download=True)
+
     data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4)
 
     # Run
