@@ -20,7 +20,7 @@ if __name__ == "__main__":
     score_model = score_model.to(device)
 
     # Define training params
-    n_epochs = 100
+    n_epochs = 10
     batch_size = 16
     lr = 10e-4
 
