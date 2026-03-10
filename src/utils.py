@@ -4,7 +4,7 @@ import numpy as np
 import torch.optim as optim
 from torch.optim.lr_scheduler import LambdaLR
 from torch.optim import Adam
-from torch.utils.data import DataLoader
+from torch.utils.data import Dataset, DataLoader
 import torch.nn.functional as F
 from tqdm import tqdm, trange
 
@@ -15,7 +15,7 @@ def train_diffusion_model(dataset,
                           score_model,
                           marginal_prob_std_fn,
                           n_epochs =   100,
-                          batch_size =  16,
+                          batch_size =  1024,
                           lr=10e-4,
                           model_name="transformer"):
     # Print model architecture size
@@ -50,13 +50,15 @@ def train_diffusion_model(dataset,
             
             if epoch % 10 == 0:
                 print(f"Epoch: {epoch}, Loss: {loss:5f}")
+        # Update the checkpoint after each epoch of training.
+        torch.save(score_model.state_dict(), f'ckpt_{model_name}.pth')
     scheduler.step()
     lr_current = scheduler.get_last_lr()[0]
     print('{} Average Loss: {:5f} lr {:.1e}'.format(epoch, avg_loss / num_items, lr_current))
     # Print the averaged training loss so far.
     tqdm_epoch.set_description('Average Loss: {:5f}'.format(avg_loss / num_items))
     # Update the checkpoint after each epoch of training.
-    torch.save(score_model.state_dict(), f'ckpt_{model_name}.pth')
+    # torch.save(score_model.state_dict(), f'ckpt_{model_name}.pth')
     
 class GaussianFourierProjection(nn.Module):
     def __init__(self, embed_dim, scale=30.):
@@ -176,7 +178,7 @@ def Euler_Maruyama_sampler(score_model,
               diffusion_coeff,
               num_steps,
               batch_size=64,
-              x_shape=(1, 28, 28),
+              x_shape=(1, 128, 128),
               device='cuda',
               eps=1e-3, y=None):
     """Generate samples from score-based models with the Euler-Maruyama solver.
@@ -209,3 +211,14 @@ def Euler_Maruyama_sampler(score_model,
             x = mean_x + torch.sqrt(step_size) * g[:, None, None, None] * torch.randn_like(x)
     # Do not include any noise in the last sampling step.
     return mean_x
+
+class MyDataset(Dataset):
+    def __init__(self, features, labels):
+        self.features = features
+        self.labels = labels
+    
+    def __len__(self):
+        return len(self.features)
+    
+    def __getitem__(self, idx):
+        return self.features[idx], self.labels[idx]

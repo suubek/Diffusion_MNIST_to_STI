@@ -5,7 +5,7 @@ from utils import GaussianFourierProjection, Dense
 
 class UNet_Tranformer(nn.Module):
     def __init__(self, marginal_prob_std, channels=[32, 64, 128, 256, 512], embed_dim=256,
-               text_dim=256, nClass=10):
+               text_dim=256, nClass=91):
         super().__init__()
         self.time_embed = nn.Sequential(
             GaussianFourierProjection(embed_dim=embed_dim),

@@ -3,9 +3,10 @@ import functools
 from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 from torchvision.datasets import MNIST
+import numpy as np
 
 from models import UNet_Tranformer
-from utils import marginal_prob_std, diffusion_coeff, train_diffusion_model
+from utils import marginal_prob_std, diffusion_coeff, train_diffusion_model, MyDataset
 
 if __name__ == "__main__":
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -24,16 +25,21 @@ if __name__ == "__main__":
     batch_size = 16
     lr = 10e-4
 
-    # Prepare dataset
-    transform = transforms.Compose([
-        transforms.Resize((128, 128)),  # Resize to 32x32 (or your desired size)
-        transforms.ToTensor(),        # Convert to tensor
-        # Optional: Add normalization if needed
-        # transforms.Normalize((0.5,), (0.5,))  # For single channel
-    ])
-    dataset = MNIST('.', train=True, transform=transform, download=True)
+    #Preparing STI dataset
+    label_path = r'data/master_labels.npy'
+    labels = np.load(label_path)
+    data_path = r'data/master_data_labeled.npy'
+    data = np.load(data_path)
+    
+    labels = torch.from_numpy(labels)
+    data = torch.from_numpy(data)
 
-    data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+    data = data/255
+
+    labels = labels.long()
+    data = data.float()
+
+    dataset = MyDataset(data, labels)
 
     # Run
     train_diffusion_model(dataset,
@@ -42,4 +48,4 @@ if __name__ == "__main__":
                           n_epochs=n_epochs,
                           batch_size=batch_size,
                           lr=lr,
-                          model_name=f"mnist_ddpm_mse_{n_epochs}e")
+                          model_name=f"STI_ddpm_mse_{n_epochs}e")
