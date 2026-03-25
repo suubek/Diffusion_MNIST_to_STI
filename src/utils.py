@@ -176,7 +176,7 @@ def Euler_Maruyama_sampler(score_model,
               diffusion_coeff,
               num_steps,
               batch_size=64,
-              x_shape=(1, 28, 28),
+              x_shape=(1, 128, 128),
               device='cuda',
               eps=1e-3, y=None):
     """Generate samples from score-based models with the Euler-Maruyama solver.
