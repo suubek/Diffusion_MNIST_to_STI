@@ -69,9 +69,9 @@ class UNet_Tranformer(nn.Module):
         h2 = self.act(self.gnorm2(self.conv2(h1) + self.dense2(embed)))
         h3 = self.act(self.gnorm3(self.conv3(h2) + self.dense3(embed)))
         h4 = self.act(self.gnorm4(self.conv4(h3) + self.dense4(embed)))
-        h4 = self.attn4(h4, y_embed)
+        # h4 = self.attn4(h4, y_embed)
         h5 = self.act(self.gnorm5(self.conv5(h4) + self.dense5(embed)))
-        h5 = self.attn5(h5, y_embed)
+        # h5 = self.attn5(h5, y_embed)
 
         # Decoding
         h = self.act(self.tgnorm5(self.tconv5(h5) + self.tdense5(embed)))

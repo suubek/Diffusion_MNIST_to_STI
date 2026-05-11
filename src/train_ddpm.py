@@ -21,16 +21,19 @@ if __name__ == "__main__":
     score_model = score_model.to(device)
 
     # Define training params
-    n_epochs = 10
+    n_epochs = 250
     batch_size = 16
     lr = 10e-4
 
     #Preparing STI dataset
     label_path = r'data/master_labels.npy'
     labels = np.load(label_path)
-    data_path = r'data/master_data_labeled.npy'
+    data_path = r'data/master_rotated_data.npy'
     data = np.load(data_path)
     
+    labels = [45.00] * len(data)
+    labels = np.array(labels)
+
     labels = torch.from_numpy(labels)
     data = torch.from_numpy(data)
 
@@ -48,4 +51,4 @@ if __name__ == "__main__":
                           n_epochs=n_epochs,
                           batch_size=batch_size,
                           lr=lr,
-                          model_name=f"STI_ddpm_mse_{n_epochs}e")
+                          model_name=f"rotated_with_label_STI_ddpm_mse_{n_epochs}e")

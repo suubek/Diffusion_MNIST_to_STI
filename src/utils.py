@@ -50,15 +50,13 @@ def train_diffusion_model(dataset,
             
             if epoch % 10 == 0:
                 print(f"Epoch: {epoch}, Loss: {loss:5f}")
-        # Update the checkpoint after each epoch of training.
-        torch.save(score_model.state_dict(), f'ckpt_{model_name}.pth')
     scheduler.step()
     lr_current = scheduler.get_last_lr()[0]
     print('{} Average Loss: {:5f} lr {:.1e}'.format(epoch, avg_loss / num_items, lr_current))
     # Print the averaged training loss so far.
     tqdm_epoch.set_description('Average Loss: {:5f}'.format(avg_loss / num_items))
     # Update the checkpoint after each epoch of training.
-    # torch.save(score_model.state_dict(), f'ckpt_{model_name}.pth')
+    torch.save(score_model.state_dict(), f'ckpt_{model_name}.pth')
     
 class GaussianFourierProjection(nn.Module):
     def __init__(self, embed_dim, scale=30.):
