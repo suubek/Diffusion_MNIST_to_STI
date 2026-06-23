@@ -36,7 +36,6 @@ class UNet_Tranformer(nn.Module):
         self.attn5 = SpatialTransformer(channels[4], text_dim)
 
         # Decoding layers
-        
         self.tconv5 = nn.ConvTranspose2d(channels[4], channels[3], 5, stride=2, bias=False, output_padding=1)
         self.tdense5 = Dense(embed_dim, channels[3])
         self.tgnorm5 = nn.GroupNorm(32, num_channels=channels[3])
@@ -97,23 +96,23 @@ class AutoEncoder(nn.Module):
         # Gaussian random feature embedding layer for time
         # Encoding layers where the resolution decreases
         self.encoder = nn.Sequential(
-            nn.Conv2d(1, channels[0], 3, stride=1, bias=True),
+            nn.Conv2d(1, channels[0], 5, stride=1, bias=True), 
             nn.BatchNorm2d(channels[0]),
             nn.SiLU(),
-            nn.Conv2d(channels[0], channels[1], 3, stride=2, bias=True),
+            nn.Conv2d(channels[0], channels[1], 5, stride=2, bias=True),
             nn.BatchNorm2d(channels[1]),
             nn.SiLU(),
-            nn.Conv2d(channels[1], channels[2], 3, stride=1, bias=True),
+            nn.Conv2d(channels[1], channels[2], 5, stride=1, bias=True),
             nn.BatchNorm2d(channels[2]),
             ) #nn.SiLU(),
         self.decoder = nn.Sequential(
-            nn.ConvTranspose2d(channels[2], channels[1], 3, stride=1, bias=True),
+            nn.ConvTranspose2d(channels[2], channels[1], 5, stride=1, bias=True),
             nn.BatchNorm2d(channels[1]),
             nn.SiLU(),
-            nn.ConvTranspose2d(channels[1], channels[0], 3, stride=2, bias=True, output_padding=1),
+            nn.ConvTranspose2d(channels[1], channels[0], 5, stride=2, bias=True, output_padding=1),
             nn.BatchNorm2d(channels[0]),
             nn.SiLU(),
-            nn.ConvTranspose2d(channels[0], 1, 3, stride=1, bias=True),
+            nn.ConvTranspose2d(channels[0], 1, 5, stride=1, bias=True),
             nn.Sigmoid(),
             )
 
@@ -126,7 +125,7 @@ class Latent_UNet_Tranformer(nn.Module):
     """A time-dependent score-based model built upon U-Net architecture."""
 
     def __init__(self, marginal_prob_std, channels=[4, 64, 128, 256], embed_dim=256,
-                 text_dim=256, nClass=10):
+                 text_dim=256, nClass=90):
         """Initialize a time-dependent score-based network.
 
         Args:
@@ -141,35 +140,36 @@ class Latent_UNet_Tranformer(nn.Module):
             GaussianFourierProjection(embed_dim=embed_dim),
             nn.Linear(embed_dim, embed_dim))
         # Encoding layers where the resolution decreases
-        self.conv1 = nn.Conv2d(channels[0], channels[1], 3, stride=1, bias=False)
+        self.conv1 = nn.Conv2d(channels[0], channels[1], 5, stride=1, bias=False)
         self.dense1 = Dense(embed_dim, channels[1])
         self.gnorm1 = nn.GroupNorm(4, num_channels=channels[1])
-        self.conv2 = nn.Conv2d(channels[1], channels[2], 3, stride=2, bias=False)
+        self.conv2 = nn.Conv2d(channels[1], channels[2], 5, stride=2, bias=False)
         self.dense2 = Dense(embed_dim, channels[2])
         self.gnorm2 = nn.GroupNorm(4, num_channels=channels[2])
         self.attn2 = SpatialTransformer(channels[2], text_dim)
-        self.conv3 = nn.Conv2d(channels[2], channels[3], 3, stride=2, bias=False)
+        self.conv3 = nn.Conv2d(channels[2], channels[3], 5, stride=2, bias=False)
         self.dense3 = Dense(embed_dim, channels[3])
         self.gnorm3 = nn.GroupNorm(4, num_channels=channels[3])
         self.attn3 = SpatialTransformer(channels[3], text_dim)
 
-        self.tconv3 = nn.ConvTranspose2d(channels[3], channels[2], 3, stride=2, bias=False, )
+        self.tconv3 = nn.ConvTranspose2d(channels[3], channels[2], 5, stride=2, bias=False, )
         self.dense6 = Dense(embed_dim, channels[2])
         self.tgnorm3 = nn.GroupNorm(4, num_channels=channels[2])
         self.attn6 = SpatialTransformer(channels[2], text_dim)
-        self.tconv2 = nn.ConvTranspose2d(channels[2], channels[1], 3, stride=2, bias=False, output_padding=1)     # + channels[2]
+        self.tconv2 = nn.ConvTranspose2d(channels[2], channels[1], 5, stride=2, bias=False, output_padding=1)     # + channels[2]
         self.dense7 = Dense(embed_dim, channels[1])
         self.tgnorm2 = nn.GroupNorm(4, num_channels=channels[1])
-        self.tconv1 = nn.ConvTranspose2d(channels[1], channels[0], 3, stride=1) # + channels[1]
+        self.tconv1 = nn.ConvTranspose2d(channels[1], channels[0], 5, stride=1) # + channels[1]
 
         # The swish activation function
         self.act = nn.SiLU() # lambda x: x * torch.sigmoid(x)
         self.marginal_prob_std = marginal_prob_std
         self.cond_embed = nn.Embedding(nClass, text_dim)
 
-    def forward(self, x, t, y=None):
+    def forward(self, x, y=None):
         # Obtain the Gaussian random feature embedding for t
-        embed = self.act(self.time_embed(t))
+        # embed = self.act(self.time_embed(t))
+        embed = 1
         y_embed = self.cond_embed(y).unsqueeze(1)
         # Encoding path
         h1 = self.conv1(x) + self.dense1(embed)

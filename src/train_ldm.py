@@ -26,11 +26,15 @@ if __name__ == "__main__":
 
     # Define training params
     n_epochs = 100
-    batch_size = 1024
+    batch_size = 64
     lr = 1e-3
 
     # Load the TensorDataset
-    dataset = torch.load(f'latent_data/mnist_latent_16d.pt')
+    torch.serialization.add_safe_globals([torch.utils.data.dataset.TensorDataset])
+    dataset = torch.load(r'latent_data\STI_latent_16d.pt')
+    data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4)    
+    x, y = next(iter(data_loader))
+    print(x.shape)
 
     # Run
     train_diffusion_model(dataset,
@@ -39,4 +43,4 @@ if __name__ == "__main__":
                         n_epochs=n_epochs,
                         batch_size=batch_size,
                         lr=lr,
-                        model_name=f"mnist_ldm_{str(lr)}_{n_epochs}e")
+                        model_name=f"STI_ldm_{str(lr)}_{n_epochs}e")
