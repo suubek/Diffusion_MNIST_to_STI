@@ -19,7 +19,7 @@ if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     n_epochs =   100  #@param {'type':'integer'}
     ## size of a mini-batch
-    batch_size =  32   #@param {'type':'integer'}
+    batch_size =  128   #@param {'type':'integer'}
     ## learning rate
     lr=10e-4 #@param {'type':'number'}
 

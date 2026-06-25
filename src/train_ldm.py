@@ -19,7 +19,7 @@ if __name__ == "__main__":
     print("initialize new score model...")
     score_model = torch.nn.DataParallel(
         Latent_UNet_Tranformer(
-            marginal_prob_std=marginal_prob_std_fn, channels = [16, 32, 64, 128]
+            marginal_prob_std=marginal_prob_std_fn, channels = [4, 64, 128, 256]
         )
     )
     score_model = score_model.to(device)
@@ -34,7 +34,6 @@ if __name__ == "__main__":
     dataset = torch.load(r'latent_data\STI_latent_16d.pt')
     data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4)    
     x, y = next(iter(data_loader))
-    print(x.shape)
 
     # Run
     train_diffusion_model(dataset,

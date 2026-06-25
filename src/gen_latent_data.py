@@ -10,7 +10,7 @@ from utils import MyDataset
 
 if __name__=="__main__":
     # Prepare dataloader
-    batch_size = 64
+    batch_size = 256
     label_path = r'data/master_labels.npy'
     labels = np.load(label_path)
     data_path = r'data/master_data_labeled.npy'
@@ -28,7 +28,7 @@ if __name__=="__main__":
     data_loader = DataLoader(dataset, batch_size=1, shuffle=True, num_workers=4)  
         # Load model
     device = 'cuda'
-    ckpt = torch.load('src/ckpt_STI_mse_100e.pth', map_location=device)
+    ckpt = torch.load('model_objects/ckpt_STI_mse_100e.pth', map_location=device)
     ae_model = AutoEncoder([4, 8, 16]).cuda()
     ae_model = ae_model.to(device)
     ae_model.load_state_dict(ckpt)

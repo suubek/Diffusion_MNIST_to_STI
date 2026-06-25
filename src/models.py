@@ -125,7 +125,7 @@ class Latent_UNet_Tranformer(nn.Module):
     """A time-dependent score-based model built upon U-Net architecture."""
 
     def __init__(self, marginal_prob_std, channels=[4, 64, 128, 256], embed_dim=256,
-                 text_dim=256, nClass=90):
+                 text_dim=256, nClass=91):
         """Initialize a time-dependent score-based network.
 
         Args:
@@ -152,7 +152,7 @@ class Latent_UNet_Tranformer(nn.Module):
         self.gnorm3 = nn.GroupNorm(4, num_channels=channels[3])
         self.attn3 = SpatialTransformer(channels[3], text_dim)
 
-        self.tconv3 = nn.ConvTranspose2d(channels[3], channels[2], 5, stride=2, bias=False, )
+        self.tconv3 = nn.ConvTranspose2d(channels[3], channels[2], 5, stride=2, bias=False, output_padding=1)
         self.dense6 = Dense(embed_dim, channels[2])
         self.tgnorm3 = nn.GroupNorm(4, num_channels=channels[2])
         self.attn6 = SpatialTransformer(channels[2], text_dim)
@@ -166,10 +166,9 @@ class Latent_UNet_Tranformer(nn.Module):
         self.marginal_prob_std = marginal_prob_std
         self.cond_embed = nn.Embedding(nClass, text_dim)
 
-    def forward(self, x, y=None):
+    def forward(self, x, t, y=None):
         # Obtain the Gaussian random feature embedding for t
-        # embed = self.act(self.time_embed(t))
-        embed = 1
+        embed = self.act(self.time_embed(t))
         y_embed = self.cond_embed(y).unsqueeze(1)
         # Encoding path
         h1 = self.conv1(x) + self.dense1(embed)
