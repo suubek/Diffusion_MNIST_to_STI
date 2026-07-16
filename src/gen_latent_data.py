@@ -10,7 +10,7 @@ from utils import MyDataset
 
 if __name__=="__main__":
     # Prepare dataloader
-    batch_size = 256
+    batch_size = 128
     label_path = r'data/master_labels.npy'
     labels = np.load(label_path)
     data_path = r'data/master_data_labeled.npy'
@@ -25,7 +25,7 @@ if __name__=="__main__":
     data = data.float()
 
     dataset = MyDataset(data, labels)
-    data_loader = DataLoader(dataset, batch_size=1, shuffle=True, num_workers=4)  
+    data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4)  
         # Load model
     device = 'cuda'
     ckpt = torch.load('model_objects/ckpt_STI_mse_100e.pth', map_location=device)

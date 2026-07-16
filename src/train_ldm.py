@@ -19,14 +19,14 @@ if __name__ == "__main__":
     print("initialize new score model...")
     score_model = torch.nn.DataParallel(
         Latent_UNet_Tranformer(
-            marginal_prob_std=marginal_prob_std_fn, channels = [4, 64, 128, 256]
+            marginal_prob_std=marginal_prob_std_fn, channels = [16, 64, 128, 256]
         )
     )
     score_model = score_model.to(device)
 
     # Define training params
     n_epochs = 100
-    batch_size = 64
+    batch_size = 128
     lr = 1e-3
 
     # Load the TensorDataset
