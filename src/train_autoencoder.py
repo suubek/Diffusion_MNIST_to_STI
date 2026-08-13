@@ -31,6 +31,7 @@ if __name__ == "__main__":
     data_path = r'data/master_data_labeled.npy'
     data = np.load(data_path)
 
+    labels = np.round(labels)
     labels = torch.from_numpy(labels)
     data = torch.from_numpy(data)
 
@@ -69,4 +70,4 @@ if __name__ == "__main__":
     # Print the averaged training loss so far.
     tqdm_epoch.set_description('Average Loss: {:5f}'.format(avg_loss / num_items))
     # Update the checkpoint after each epoch of training.
-    torch.save(ae_model.state_dict(), f'ckpt_STI_mse_{n_epochs}e.pth')
+    torch.save(ae_model.state_dict(), f'ckpt_rounded_STI_mse_{n_epochs}e.pth')

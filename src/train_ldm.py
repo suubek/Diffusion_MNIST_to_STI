@@ -31,7 +31,7 @@ if __name__ == "__main__":
 
     # Load the TensorDataset
     torch.serialization.add_safe_globals([torch.utils.data.dataset.TensorDataset])
-    dataset = torch.load(r'latent_data\STI_latent_16d.pt')
+    dataset = torch.load(r'latent_data\rounded_STI_latent_16d.pt')
     data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4)    
     x, y = next(iter(data_loader))
 

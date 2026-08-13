@@ -28,7 +28,7 @@ if __name__=="__main__":
     data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4)  
         # Load model
     device = 'cuda'
-    ckpt = torch.load('model_objects/ckpt_STI_mse_100e.pth', map_location=device)
+    ckpt = torch.load('model_objects/ckpt_rounded_STI_mse_100e.pth', map_location=device)
     ae_model = AutoEncoder([4, 8, 16]).cuda()
     ae_model = ae_model.to(device)
     ae_model.load_state_dict(ckpt)
