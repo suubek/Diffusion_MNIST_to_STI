@@ -86,7 +86,7 @@ class UNet_Tranformer(nn.Module):
 class AutoEncoder(nn.Module):
     """A time-dependent score-based model built upon U-Net architecture."""
 
-    def __init__(self, channels=[4, 8, 32],):
+    def __init__(self, channels=[4, 8, 16],):
         """Initialize a time-dependent score-based network.
         Args:
             channels: The number of channels for feature maps of each resolution.
@@ -124,7 +124,7 @@ class AutoEncoder(nn.Module):
 class Latent_UNet_Tranformer(nn.Module):
     """A time-dependent score-based model built upon U-Net architecture."""
 
-    def __init__(self, marginal_prob_std, channels=[4, 64, 128, 256], embed_dim=256,
+    def __init__(self, marginal_prob_std, channels=[16, 64, 128, 256], embed_dim=256,
                  text_dim=256, nClass=91):
         """Initialize a time-dependent score-based network.
 

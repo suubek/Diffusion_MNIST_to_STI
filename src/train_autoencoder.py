@@ -26,12 +26,15 @@ if __name__ == "__main__":
     # dataset = MNIST('.', train=True, transform=transforms.ToTensor(), download=True)
     # data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4)
     
-    label_path = r'data/master_labels.npy'
-    labels = np.load(label_path)
-    data_path = r'data/master_data_labeled.npy'
-    data = np.load(data_path)
-
+    labels = np.load(r'data/master_labels.npy')
+    data = np.load(r'data/master_data_labeled.npy')
     labels = np.round(labels)
+    synth_labels = np.load(r'data/synth_labels.npy', allow_pickle=True)
+    synth_data = np.load(r'data/synth_grayscale_images.npy')
+
+    labels = np.concat((labels, synth_labels))
+    data = np.concat((data, synth_data))
+
     labels = torch.from_numpy(labels)
     data = torch.from_numpy(data)
 
