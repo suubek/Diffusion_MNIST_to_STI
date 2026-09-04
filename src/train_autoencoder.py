@@ -15,11 +15,11 @@ if __name__ == "__main__":
     #lpips = LPIPS(net="squeeze").cuda()
     loss_fn_ae = lambda x,xhat: nn.functional.mse_loss(x, xhat)# + lpips(x.repeat(1,3,1,1), x_hat.repeat(1,3,1,1)).mean()
 
-    ae_model = AutoEncoder([4, 8, 16]).cuda()
+    ae_model = AutoEncoder([2, 4, 8]).cuda()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     n_epochs =   100  #@param {'type':'integer'}
     ## size of a mini-batch
-    batch_size =  128   #@param {'type':'integer'}
+    batch_size =  256   #@param {'type':'integer'}
     ## learning rate
     lr=10e-4 #@param {'type':'number'}
 
@@ -32,6 +32,7 @@ if __name__ == "__main__":
     synth_labels = np.load(r'data/synth_labels.npy', allow_pickle=True)
     synth_data = np.load(r'data/synth_grayscale_images.npy')
 
+    synth_labels = 90 - synth_labels
     labels = np.concat((labels, synth_labels))
     data = np.concat((data, synth_data))
 
@@ -73,4 +74,4 @@ if __name__ == "__main__":
     # Print the averaged training loss so far.
     tqdm_epoch.set_description('Average Loss: {:5f}'.format(avg_loss / num_items))
     # Update the checkpoint after each epoch of training.
-    torch.save(ae_model.state_dict(), f'ckpt_rounded_STI_mse_{n_epochs}e.pth')
+    torch.save(ae_model.state_dict(), f'ckpt_v3_synth_mix_STI_mse_{n_epochs}e.pth')

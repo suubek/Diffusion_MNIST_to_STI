@@ -19,19 +19,19 @@ if __name__ == "__main__":
     print("initialize new score model...")
     score_model = torch.nn.DataParallel(
         Latent_UNet_Tranformer(
-            marginal_prob_std=marginal_prob_std_fn, channels = [16, 64, 128, 256]
+            marginal_prob_std=marginal_prob_std_fn, channels = [8, 64, 128, 256]
         )
     )
     score_model = score_model.to(device)
 
     # Define training params
     n_epochs = 100
-    batch_size = 128
+    batch_size = 256
     lr = 1e-3
 
     # Load the TensorDataset
     torch.serialization.add_safe_globals([torch.utils.data.dataset.TensorDataset])
-    dataset = torch.load(r'latent_data\synth_mix_STI_latent_16d.pt')
+    dataset = torch.load(r'latent_data\v2_synth_mix_STI_latent_16d.pt')
     data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4)    
     x, y = next(iter(data_loader))
 
@@ -42,4 +42,4 @@ if __name__ == "__main__":
                         n_epochs=n_epochs,
                         batch_size=batch_size,
                         lr=lr,
-                        model_name=f"STI_ldm_{str(lr)}_{n_epochs}e")
+                        model_name=f"v3_synth_mix_STI_ldm_{str(lr)}_{n_epochs}e")

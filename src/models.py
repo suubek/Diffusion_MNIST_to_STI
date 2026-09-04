@@ -102,11 +102,11 @@ class AutoEncoder(nn.Module):
             nn.Conv2d(channels[0], channels[1], 5, stride=2, bias=True),
             nn.BatchNorm2d(channels[1]),
             nn.SiLU(),
-            nn.Conv2d(channels[1], channels[2], 5, stride=1, bias=True),
+            nn.Conv2d(channels[1], channels[2], 5, stride=2, bias=True),
             nn.BatchNorm2d(channels[2]),
             ) #nn.SiLU(),
         self.decoder = nn.Sequential(
-            nn.ConvTranspose2d(channels[2], channels[1], 5, stride=1, bias=True),
+            nn.ConvTranspose2d(channels[2], channels[1], 5, stride=2, bias=True, output_padding=1),
             nn.BatchNorm2d(channels[1]),
             nn.SiLU(),
             nn.ConvTranspose2d(channels[1], channels[0], 5, stride=2, bias=True, output_padding=1),

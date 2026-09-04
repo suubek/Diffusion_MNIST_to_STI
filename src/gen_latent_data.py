@@ -33,8 +33,8 @@ if __name__=="__main__":
     data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4)    
         # Load model
     device = 'cuda'
-    ckpt = torch.load('model_objects/ckpt_synth_mix_STI_mse_100e.pth', map_location=device)
-    ae_model = AutoEncoder([4, 8, 16]).cuda()
+    ckpt = torch.load('model_objects/ckpt_v2_synth_mix_STI_mse_100e.pth', map_location=device)
+    ae_model = AutoEncoder([2, 4, 8]).cuda()
     ae_model = ae_model.to(device)
     ae_model.load_state_dict(ckpt)
     ae_model.requires_grad_(False)
@@ -54,6 +54,6 @@ if __name__=="__main__":
     
     # Save original
     latent_dataset = TensorDataset(zdata, ydata)
-    torch.save(latent_dataset, 'synth_mix_STI_latent_16d.pt')
+    torch.save(latent_dataset, 'v3_synth_mix_STI_latent_16d.pt')
     print("TensorDataset saved.")
 
